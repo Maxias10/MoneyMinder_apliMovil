@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -331,36 +332,69 @@ fun PantallaGastos(navController: NavHostController, viewModel: FinanzasViewMode
    }
 }
 
-
 @Composable
 fun PantallaConfiguracion(navController: NavHostController, viewModel: FinanzasViewModel) {
-   var meta by remember { mutableStateOf(viewModel.metaAhorro.toString()) }
+    var correo by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Bienvenido", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(24.dp))
 
-   Column(
-       modifier = Modifier.fillMaxSize().padding(16.dp),
-       horizontalAlignment = Alignment.CenterHorizontally,
-       verticalArrangement = Arrangement.Center
-   ) {
-       Text("Configuración de Ahorro", style = MaterialTheme.typography.titleLarge)
-       Spacer(modifier = Modifier.height(8.dp))
-       OutlinedTextField(
-           value = meta,
-           onValueChange = { meta = it },
-           label = { Text("Meta de ahorro") }
-       )
-       Spacer(modifier = Modifier.height(8.dp))
-       Button(onClick = {
-           meta.toDoubleOrNull()?.let { nuevaMeta ->
-               viewModel.actualizarMetaAhorro(nuevaMeta)
-               Log.d("PantallaConfiguracion", "Meta de ahorro actualizada a $meta")
-           }
-       }) {
-           Text("Guardar Meta")
-       }
-   }
+        OutlinedTextField(
+            value = correo,
+            onValueChange = { correo = it },
+            label = { Text("Correo Electrónico") },
+            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Correo") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = contrasena,
+            onValueChange = { contrasena = it },
+            label = { Text("Contraseña") },
+            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                // Lógica de Login (por ahora solo impresión)
+                Log.d("Login", "Usuario: $correo - Contraseña: $contrasena")
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)) // Verde
+        ) {
+            Icon(Icons.Filled.Login, contentDescription = "Iniciar sesión")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Iniciar Sesión")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                // Lógica de Registro (por ahora solo impresión)
+                Log.d("Registro", "Nuevo usuario: $correo - Contraseña: $contrasena")
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)) // Azul
+        ) {
+            Icon(Icons.Filled.PersonAdd, contentDescription = "Registrarse")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Registrarse")
+        }
+    }
 }
-
 
 @Composable
 fun PantallaMetaAhorro(navController: NavHostController, viewModel: FinanzasViewModel) {
@@ -389,7 +423,7 @@ fun PantallaMetaAhorro(navController: NavHostController, viewModel: FinanzasView
 
        Spacer(modifier = Modifier.height(32.dp))
        Button(onClick = { navController.navigate("config") }) {
-           Text("Editar Meta de Ahorro")
+           Text("Guardar Meta")
        }
        Spacer(modifier = Modifier.height(8.dp))
        Button(onClick = { navController.popBackStack() }) {
